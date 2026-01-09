@@ -1,0 +1,13 @@
+flowchart LR
+    A[Application / Client]
+    B[LLM API]
+    C[Evaluation Runner]
+    D[Metrics Engine]
+    E[Eval Reports]
+    F[Regression Comparison]
+
+    A --> B
+    B --> C
+    C --> D
+    D --> E
+    E --> F
