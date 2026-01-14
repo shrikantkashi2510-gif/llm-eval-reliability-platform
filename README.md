@@ -1,6 +1,24 @@
 # LLM Evaluation & Reliability Platform
 
-A production-focused platform for evaluating, monitoring, and validating LLM behavior over time.
+> Production-focused LLM evaluation and reliability platform for monitoring quality, drift, and cost in real-world deployments.
+
+> This repository reflects evaluation patterns used when operating LLM systems beyond experimentation.
+
+
+## Who This Is For
+
+This project is designed for:
+- Teams operating LLMs in production environments
+- Engineers responsible for model quality, monitoring, and evaluation
+- Organizations needing repeatable and auditable LLM assessments
+
+## When to Use This
+
+Use this platform when:
+- LLM outputs must be evaluated continuously, not manually
+- Regression, drift, or quality degradation is a concern
+- Cost and latency need to be tracked alongside model quality
+
 
 ## Why This Project Exists
 Most LLM failures are silent:
