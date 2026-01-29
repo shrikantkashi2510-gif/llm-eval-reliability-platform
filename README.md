@@ -58,6 +58,37 @@ These failures are rarely caught by traditional monitoring — which is why eval
 - Drift detection across prompt/model changes
 - Designed for local and hosted execution
 
+```mermaid
+graph LR
+    subgraph "Development Phase"
+        Prompt["📝 New Prompt/Model"]
+        Golden["🏆 Golden Dataset"]
+    end
+
+    subgraph "The Eval Engine"
+        Run["⚙️ Evaluation Runner"]
+        Metric["📊 Metric Scorer"]
+        Check{Pass / Fail?}
+    end
+
+    subgraph "Outcome"
+        Gate["✅ Deploy to Prod"]
+        Alert["⚠️ Block & Alert"]
+    end
+
+    %% Flow
+    Prompt --> Run
+    Golden --> Run
+    Run --> Metric
+    Metric --> Check
+    Check -->|Score > 0.9| Gate
+    Check -->|Drift Detected| Alert
+
+    style Check fill:#f9f,stroke:#333,stroke-width:2px
+    style Gate fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style Alert fill:#f8d7da,stroke:#dc3545,stroke-width:2px
+```
+
 ## How This Fits Into Real Production Systems
 
 In production environments, this platform acts as a reliability layer alongside:
@@ -70,6 +101,17 @@ In production environments, this platform acts as a reliability layer alongside:
 It does not replace orchestration or inference systems.
 
 It ensures those systems remain trustworthy over time.
+
+🚀 Production Implementation: The "Safety Gate"
+This platform is designed to be injected into the GitHub Actions / GitLab CI pipeline.
+
+1.Commit: Developer modifies an agent's prompt.
+
+2.Trigger: CI starts the LLM-Eval runner.
+
+3.Validation: System runs the new prompt against 100+ "Golden" test cases.
+
+4.Enforcement: If the Faithfulness Score drops by more than 5%, the Build is automatically failed, preventing a regression from hitting production.
 
 
 ## What This Is Not
@@ -101,9 +143,20 @@ This platform focuses on **semantic reliability**, not just system health.
 Instead of manual spot checks, the system replays curated prompts
 with clearly defined expected behavior to detect regressions.
 
-**Metric-Driven Evaluation**  
-Each evaluation run produces machine-readable scores
-(e.g., faithfulness, relevance) that can be compared across time.
+**Evaluation-as-Code(EaC):**  
+We treat test cases like unit tests. 
+This allows for version-controlled reliability that scales with the codebase.
+
+📈 Evaluator Suite (Metrics)
+This platform implements the "Trinity of Groundedness" to ensure semantic integrity:
+
+Faithfulness (NLI): Measures if the answer is derived only from the provided context (Anti-Hallucination).
+
+Answer Relevance: Evaluates if the response actually addresses the user's intent without "fluff."
+
+Context Precision: Ensures the Retrieval Layer is not injecting "noisy" data that confuses the model.
+
+Semantic Similarity (BERTScore): Detects intent drift between model versions (e.g., GPT-4 vs GPT-4o).
 
 **Stateless and Model-Agnostic**  
 Evaluation logic is decoupled from any specific model or vendor,
@@ -136,12 +189,9 @@ Only configuration and scheduling differ.
 
 ---
 
-### 5. How I Would Extend This in Production
-If deployed in a real system, I would:
-- Add automated regression thresholds as release gates
-- Store evaluation history for trend analysis
-- Integrate alerts when semantic metrics degrade
-- Add cost-aware sampling for large-scale deployments
+### 5. Cost-Aware Sampling:
+In production, evaluating 100% of traffic is too expensive. 
+I would implement a 5% "Shadow Evaluation" strategy to monitor live drift without doubling token costs.
 
 ---
 
