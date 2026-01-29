@@ -59,6 +59,21 @@ These failures are rarely caught by traditional monitoring — which is why eval
 - Designed for local and hosted execution
 
 ```mermaid
+%%{init: {
+  'theme': 'base',
+  'themeVariables': {
+    'primaryColor': '#01579b',
+    'primaryTextColor': '#ffffff',
+    'primaryBorderColor': '#81d4fa',
+    'lineColor': '#81d4fa',
+    'secondaryColor': '#003366',
+    'tertiaryColor': '#263238',
+    'clusterBkg': '#1a1a1a',
+    'clusterBorder': '#81d4fa',
+    'edgeLabelBackground':'#1a1a1a',
+    'nodeTextColor': '#ffffff'
+  }
+}}%%
 graph LR
     subgraph "Development Phase"
         Prompt["📝 New Prompt/Model"]
@@ -68,7 +83,7 @@ graph LR
     subgraph "The Eval Engine"
         Run["⚙️ Evaluation Runner"]
         Metric["📊 Metric Scorer"]
-        Check{Pass / Fail?}
+        Check{"Pass / Fail?"}
     end
 
     subgraph "Outcome"
@@ -81,12 +96,13 @@ graph LR
     Golden --> Run
     Run --> Metric
     Metric --> Check
-    Check -->|Score > 0.9| Gate
-    Check -->|Drift Detected| Alert
+    Check -->|"Score > 0.9"| Gate
+    Check -->|"Drift Detected"| Alert
 
-    style Check fill:#f9f,stroke:#333,stroke-width:2px
-    style Gate fill:#d4edda,stroke:#28a745,stroke-width:2px
-    style Alert fill:#f8d7da,stroke:#dc3545,stroke-width:2px
+    %% Specific Styles with BLACK TEXT for visibility
+    style Check fill:#f9f,stroke:#333,stroke-width:2px,color:#000000
+    style Gate fill:#d4edda,stroke:#28a745,stroke-width:2px,color:#000000
+    style Alert fill:#f8d7da,stroke:#dc3545,stroke-width:2px,color:#000000
 ```
 
 ## How This Fits Into Real Production Systems
